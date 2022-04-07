@@ -1,0 +1,1 @@
+{"id":"a7138243-9f5c-4bfa-a621-844d69ce2868","space":19728,"runtime":"python3.9","name":"MyMovieListAPI","path":"6o5zl5","project":"a0lg3y45","account":"144798365827","region":"eu-central-1","deps":["fastapi","bcrypt","pydantic[email]","motor"],"envs":null,"public":true,"log_level":"debug","cron":""}

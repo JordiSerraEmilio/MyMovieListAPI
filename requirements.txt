@@ -1,0 +1,4 @@
+fastapi
+bcrypt
+pydantic[email]
+motor
