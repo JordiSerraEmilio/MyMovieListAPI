@@ -58,6 +58,8 @@ class UserModel(BaseModel):
                 ],
                 "reviews": [
                     {"id": "12345",
+                     "movie_id": "1",
+                     "backdrop_path": "ni idea",
                      "movie_title": "Saw",
                      "comment": "Godlike movie!",
                      "score": "9.0"
@@ -114,6 +116,8 @@ class UpdateUserModel(BaseModel):
                 ],
                 "reviews": [
                     {"id": "12345",
+                     "movie_id": "1",
+                     "backdrop_path": "ni idea",
                      "movie_title": "Saw",
                      "comment": "Godlike movie!",
                      "score": "9.0"
