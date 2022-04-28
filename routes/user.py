@@ -7,7 +7,7 @@ from pydantic import EmailStr
 from starlette import status
 from starlette.responses import JSONResponse
 from utils import encrypt_things
-from schemas.user import UserModel
+from schemas.user import UserModel, UpdateUserModel
 from config.db import db
 
 user = APIRouter()
@@ -49,7 +49,6 @@ async def find_all_users():
 
 @user.post("/users", response_model=UserModel)
 async def create_user(user: UserModel = Body(...)):
-
     # Crear la salt per l'usuari
     user.salt = encrypt_things.generate_salt()
     print(user.salt)
@@ -67,5 +66,27 @@ async def create_user(user: UserModel = Body(...)):
     created_user = await db["users"].find_one({"_id": new_user.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_user)
 
+
+# endregion
+
+# region UPDATE REQUESTS
+
+@user.put("/{email}", response_description="Update a user", response_model=UserModel)
+async def update_user(email: EmailStr, _user: UpdateUserModel = Body(...)):
+    _user = {k: v for k, v in _user.dict().items() if v is not None}
+
+    if len(_user) >= 1:
+        update_result = await db["users"].update_one({"email": email}, {"$set": _user})
+
+        if update_result.modified_count == 1:
+            if (
+                updated_user := await db["users"].find_one({"email": email})
+            ) is not None:
+                return updated_user
+
+    if (existing_user := await db["users"].find_one({"email": email})) is not None:
+        return existing_user
+
+    raise HTTPException(status_code=404, detail=f"User {email} not found")
 
 # endregion
