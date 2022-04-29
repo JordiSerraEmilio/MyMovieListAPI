@@ -49,22 +49,26 @@ async def find_all_users():
 
 @user.post("/users", response_model=UserModel)
 async def create_user(user: UserModel = Body(...)):
-    # Crear la salt per l'usuari
-    user.salt = encrypt_things.generate_salt()
-    print(user.salt)
 
-    # Contrasenya + SALT
-    concat_password = user.password.encode() + user.salt
-    print(concat_password)
+    if (existing_user := await db["users"].find_one({"email": user.email})) is None:
+        # Crear la salt per l'usuari
+        user.salt = encrypt_things.generate_salt()
+        print(user.salt)
 
-    # Hash del concat_password
-    user.password = encrypt_things.convert_to_sha256(concat_password)
-    print(user.password)
+        # Contrasenya + SALT
+        concat_password = user.password.encode() + user.salt
+        print(concat_password)
 
-    _user = jsonable_encoder(user)
-    new_user = await db["users"].insert_one(_user)
-    created_user = await db["users"].find_one({"_id": new_user.inserted_id})
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_user)
+        # Hash del concat_password
+        user.password = encrypt_things.convert_to_sha256(concat_password)
+        print(user.password)
+
+        _user = jsonable_encoder(user)
+        new_user = await db["users"].insert_one(_user)
+        created_user = await db["users"].find_one({"_id": new_user.inserted_id})
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_user)
+
+    raise HTTPException(status_code=404, detail=f"User {user.email} already exist")
 
 
 # endregion
@@ -80,7 +84,7 @@ async def update_user(email: EmailStr, _user: UpdateUserModel = Body(...)):
 
         if update_result.modified_count == 1:
             if (
-                updated_user := await db["users"].find_one({"email": email})
+                    updated_user := await db["users"].find_one({"email": email})
             ) is not None:
                 return updated_user
 
