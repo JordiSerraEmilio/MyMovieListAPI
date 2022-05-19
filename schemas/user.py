@@ -68,11 +68,15 @@ class UserModel(BaseModel):
                 "seen": [
                     {"id": "12345",
                      "movie_id": "11",
+                     "backdrop_path": "ni idea",
+                     "movie_title": "Saw"
                      }
                 ],
                 "toWatch": [
                     {"id": "12345",
                      "movie_id": "2",
+                     "backdrop_path": "ni idea",
+                     "movie_title": "Saw",
                      }
                 ],
                 "dropped": [
@@ -126,11 +130,15 @@ class UpdateUserModel(BaseModel):
                 "seen": [
                     {"id": "12345",
                      "movie_id": "11",
+                     "backdrop_path": "ni idea",
+                     "movie_title": "Saw"
                      }
                 ],
                 "toWatch": [
                     {"id": "12345",
                      "movie_id": "2",
+                     "backdrop_path": "ni idea",
+                     "movie_title": "Saw"
                      }
                 ],
                 "dropped": [
